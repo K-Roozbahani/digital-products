@@ -8,10 +8,12 @@ class CategoryAdmin(admin.ModelAdmin):
     list_filter = ['parent', 'is_enable']
     search_fields = ['title']
 
+
 class FileInlineAdmin(admin.StackedInline):
     model = File
     fields = ['title', 'file_type', 'file', 'is_enable']
     extra = 0
+
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
