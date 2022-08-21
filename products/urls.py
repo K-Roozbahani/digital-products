@@ -11,7 +11,6 @@ urlpatterns = [
     path('products/', ProductListView.as_view(), name='products-list'),
     path('products/<int:pk>/', ProductDetail.as_view(), name='product-detail'),
     path('products/<int:product_id>/files/', FilesView.as_view(), name='file-view'),
-    path('products/<int:product_id>/files/<int:pk>/', FileDetailView.as_view(), name='file-detail')
+    path('products/<int:product_id>/files/<int:pk>/', FileDetailView.as_view(), name='file-detail'),
 ]
-
 

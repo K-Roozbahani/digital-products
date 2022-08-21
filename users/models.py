@@ -2,7 +2,7 @@ import random
 
 from django.db import models
 
-from django.utils.translation import ungettext_lazy as _
+from django.utils.translation import ugettext_lazy as _
 from django.core import validators
 from django.utils import timezone
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager, send_mail
@@ -34,10 +34,11 @@ class UserManager(BaseUserManager):
                 username = email.split('@', 1)[0]
             if phone_number:
                 username = random.choice('abcdefghijklmnopqrstuvwxyz') + str(phone_number)[-7:0]
-            while User.objects.filter(username=username).exsists():
+            while User.objects.filter(username=username).exists():
                 username += str(random.randint(10, 99))
+            return self._create_user(username, phone_number, email, password, False, False, **extra_fields)
 
-    def creat_superuser(self, username, phone_number, email, password, **extra_fields):
+    def create_superuser(self, username, phone_number, email, password, **extra_fields):
         return self._create_user(username, phone_number, email, password, True, True, **extra_fields)
 
     def get_by_phone_number(self, phone_number):
@@ -57,7 +58,7 @@ class User(AbstractBaseUser, PermissionsMixin):
                                 )
     first_name = models.CharField(_('first name'), max_length=30, blank=True)
     last_name = models.CharField(_('last name'), max_length=30, blank=True)
-    email = models.EmailField(_('email address'), unique=True, blank=True)
+    email = models.EmailField(_('email address'), unique=True, blank=True, null=True)
     phone_number = models.BigIntegerField(_("phone number"), unique=True, null=True, blank=True,
                                           validators=[
                                               validators.RegexValidator(r'^989[0-3,9]\d{8}$',
@@ -70,12 +71,12 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_active = models.BooleanField(_('active'), default=True,
                                     help_text=_('Designates whether this user should be treat as active.'
                                                 'unselect this instead of deleting accounts'))
-    date_join = models.DateTimeField(_('date joined'), default=timezone.now())
+    date_joined = models.DateTimeField(_('date joined'), default=timezone.now())
     last_seen = models.DateTimeField(_('last seen date'), null=True)
 
-    objects = BaseUserManager()
+    objects = UserManager()
 
-    USERNAME_FILD = 'username'
+    USERNAME_FIELD = 'username'
     REQUIRED_FIELDS = ['email', 'phone_number']
 
     class Meta:
@@ -108,8 +109,8 @@ class UserProfile(models.Model):
     nick_name = models.CharField(_("nick name"), max_length=150, blank=True)
     avatar = models.ImageField(_('avatar'), blank=True)
     birthday = models.DateField(_("birthday"), null=True, blank=True)
-    gender = models.NullBooleanField(_('gender'), help_text="famel is False, male is True, Null is unset.")
-    province = models.ForeignKey(verbose_name=_('provice'), to='province', null=True, on_delete=models.SET_NULL)
+    gender = models.BooleanField(_('gender'), help_text="famel is False, male is True, Null is unset.", null=True)
+    province = models.ForeignKey(verbose_name=_('province'), to='province', null=True, on_delete=models.SET_NULL)
 
     class Meta:
         db_table = 'user_profiles'

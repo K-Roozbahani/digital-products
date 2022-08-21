@@ -1,16 +1,19 @@
-#from django.shortcuts import render
+# from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.permissions import IsAuthenticated
 
 from .models import Product, File, Category
 from .serializers import ProductSerializer, FileSerializer, CategorySerializer
+
 
 class CategoryView(APIView):
     def get(self, request):
         categories = Category.objects.all()
         serializer = CategorySerializer(categories, many=True)
         return Response(serializer.data)
+
 
 class CategoryDetailView(APIView):
     def get(self, request, pk):
@@ -22,8 +25,6 @@ class CategoryDetailView(APIView):
         return Response(serializer.data)
 
 
-
-
 class ProductListView(APIView):
 
     def get(self, request):
@@ -32,8 +33,8 @@ class ProductListView(APIView):
         return Response(serializer.data)
 
 
-
 class ProductDetail(APIView):
+    permission_classes = [IsAuthenticated]
 
     def get(self, request, pk):
         try:

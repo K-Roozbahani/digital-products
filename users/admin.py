@@ -1,17 +1,17 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.models import Group
-from django.utils.translation import ungettext_lazy as _
+from django.utils.translation import ugettext_lazy as _
 
 from .models import User, Province
 
 
 # class admin site
 class MyUserAdmin(UserAdmin):
-    fields = (
+    fieldsets = (
         (None, {'fields': ('username', 'password')}),
         (_('personal info'), {'fields': ('first_name', 'last_name', 'phone_number', 'email')}),
-        (_('permissions'), {'fields': ('is_active', 'is_staff', 'superuser', 'groups', 'user_permissions')}),
+        (_('permissions'), {'fields': ('is_active', 'is_staff', 'groups', 'user_permissions')}),
         (_('Important dates'), {'fields': ('last_login', 'date_joined')}),
     )
 

@@ -23,6 +23,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
 
     path('', include('products.urls')),
+    path('', include('users.urls'))
 ]
 
 #for show media in enviroment development enviroment
